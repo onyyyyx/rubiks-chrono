@@ -1,24 +1,6 @@
-let global_direction = false
-let pos = 0
-let dir2 = false
+let endTime = 0
 let startTime = 0
-function move () {
-    global_direction = Math.randomBoolean()
-    if (global_direction) {
-        pos = [0, 2, 4]._pickRandom()
-        dir2 = Math.randomBoolean()
-        if (dir2) {
-            for (let index = 0; index <= 4; index++) {
-                if (led.point(pos, index + 1)) {
-                    led.plot(pos, index)
-                    led.unplot(pos, index + 1)
-                }
-            }
-        } else {
-        	
-        }
-    }
-}
+datalogger.includeTimestamp(FlashLogTimeStampFormat.None)
 basic.forever(function () {
     while (!(input.buttonIsPressed(Button.AB))) {
         basic.clearScreen()
@@ -28,7 +10,31 @@ basic.forever(function () {
     }
     startTime = control.millis()
     while (!(input.buttonIsPressed(Button.AB))) {
-    	
+        for (let valeur of [
+        images.createImage(`
+            . . . . .
+            . . . . .
+            . . # . .
+            . . . . .
+            . . . . .
+            `),
+        images.iconImage(IconNames.SmallDiamond),
+        images.iconImage(IconNames.SmallSquare),
+        images.iconImage(IconNames.Diamond),
+        images.iconImage(IconNames.Square),
+        images.iconImage(IconNames.Chessboard)
+        ]) {
+            valeur.showImage(0)
+            if (input.buttonIsPressed(Button.AB)) {
+                break;
+            }
+        }
     }
+    while (input.buttonIsPressed(Button.AB)) {
+        basic.clearScreen()
+    }
+    endTime = (control.millis() - startTime) / 1000
+    datalogger.log(datalogger.createCV("Time", endTime))
+    basic.showString("" + (endTime))
     basic.clearScreen()
 })
